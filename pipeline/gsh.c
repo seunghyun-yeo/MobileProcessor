@@ -502,7 +502,7 @@ void execute()
 		}
 		if(bcond)
 		{
-			if(dp[idexin.dpindex][1]==0)dp[idexin.dpindex][1]=3;
+			if(dp[idexin.dpindex][1]==0)dp[idexin.dpindex][1]=1;
 			else if(dp[idexin.dpindex][1]==1)dp[idexin.dpindex][1]=3;
 			else if(dp[idexin.dpindex][1]==2)dp[idexin.dpindex][1]=3;
 			else if(dp[idexin.dpindex][1]==3)dp[idexin.dpindex][1]=3;
@@ -513,7 +513,7 @@ void execute()
 			if(dp[idexin.dpindex][1]==0)dp[idexin.dpindex][1]=0;
 			else if(dp[idexin.dpindex][1]==1)dp[idexin.dpindex][1]=0;
 			else if(dp[idexin.dpindex][1]==2)dp[idexin.dpindex][1]=0;
-			else if(dp[idexin.dpindex][1]==3)dp[idexin.dpindex][1]=0;
+			else if(dp[idexin.dpindex][1]==3)dp[idexin.dpindex][1]=2;
 		}
 	}
 	exmemout.memtoreg=idexin.memtoreg;

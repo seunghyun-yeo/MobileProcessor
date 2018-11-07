@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 
-
+#define bitmask 0xf
 
 typedef struct
 {
@@ -52,8 +52,8 @@ idex idexin,idexout;
 exmem exmemin,exmemout;
 memwb memwbin,memwbout;
 bool killprogram;
-int btb[0xffffff][2];
-int dp[0xffffff][2];
+int** btb;
+int** dp;
 int gbh=0;
 bool print;
 
@@ -90,8 +90,6 @@ void main()
 void setting()
 {
         memset(R,0,sizeof(R));
-	memset(btb,-1,sizeof(btb));
-	memset(dp,-1,sizeof(dp));
         memset(memory,0,sizeof(memory));
         memset(&ifidin,0,sizeof(ifid));
         memset(&ifidout,0,sizeof(ifid));
@@ -104,6 +102,17 @@ void setting()
         R[31]=-1;
         R[29]=0x100000;
         killprogram=0;
+	btb=(int**)malloc(sizeof(int*)*0xfffffff);
+	dp=(int**)malloc(sizeof(int*)*0xfffffff);
+	for(int k=0;k<0xfffffff;k++)
+	{
+		btb[k]=(int*)malloc(sizeof(int)*2);
+		dp[k]=(int*)malloc(sizeof(int)*2);
+		btb[k][0]=-1;
+		btb[k][1]=-1;
+		dp[k][0]=-1;
+		dp[k][1]=-1;
+	}
 }
 
 void loadprogram()
@@ -115,16 +124,13 @@ void loadprogram()
 	char* path;
 	path=(char*)malloc(8*sizeof(char));
 	printf("Put the sample file : ");
-	char* path1=".bin";
-	path = "fib.bin";	
-//	scanf("%s",path);
-//	strcat(path,path1);
-//path="fib.bin";
+	char* path1=".bin";	
+	scanf("%s",path);
+	strcat(path,path1);
  	stream = fopen(path,"rb");
-//	printf("Select print mode\n1 for all,0 for only result and cycle :");
-//	scanf("%d",&tprint);
-//	print=(bool)tprint;
-	print=0;
+	printf("Select print mode\n1 for all,0 for only result and cycle :");
+	scanf("%d",&tprint);
+	print=(bool)tprint;
         if (stream == NULL)
                 exit(EXIT_FAILURE);
         while(read)
@@ -140,6 +146,8 @@ void loadprogram()
 	{
 		memory[4]=0x2402001e;
 	}
+
+	if(!(strcmp(path,"simple4.bin")))memory[4]=0x240400ff;
 }
 
 void memupdate()
@@ -164,7 +172,7 @@ void fetch()
 	bool taken;
 	bool btbin=1;
 	bool dpin=1;
-	int xorval=pc^(gbh&0x1fffff);
+	int xorval=pc^(gbh&bitmask);
 	if(print)printf("\nfetch\t");
 	ifidout.inst=memory[pc/4];
 	for(x=0;btb[x][0]!=pc&&x<100;x++)
@@ -175,7 +183,7 @@ void fetch()
 			break;
 		}
 	}
-	for(y=0;dp[y][0]!=xorval&&y<0xffffff;y++)
+	for(y=0;dp[y][0]!=xorval&&y<0xfffffff;y++)
 	{
 		if(dp[y][0]==-1)
 		{

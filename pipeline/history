@@ -7,4 +7,5 @@ argument : pattern
 8	:	TTTTTTNNNTNNTTNNNTTTNNNTNNTTTTNNNTNNTTNNN(41)
 fib (n)의 히스토리는
 T concat fib(n-1)의 히스토리 concat fin(n-2)의 히스토리의 형태를 보임
-T:H(fib(n-1)):H(fib(n-2))
+history = T:H(fib(n-1)):H(fib(n-2))
+#(history) = 1+#(H(fib(n-1)))+#(H(fib(n-2)))
